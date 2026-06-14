@@ -1,0 +1,42 @@
+# Java / Maven
+/target/
+**/target/
+.mvn/wrapper/maven-wrapper.jar
+
+# IDEs and editors
+.idea/
+*.iml
+.vscode/
+/.classpath
+/.project
+
+# Mac
+.DS_Store
+
+# Logs
+.log
+logs/
+
+# Build
+/out/
+/build/
+
+# Environment
+.env
+.env.*
+local.properties
+
+# Test output
+surefire-reports/
+failsafe-reports/
+
+# System files
+# Thumbs.db for Windows
+Thumbs.db
+
+# Node
+node_modules/
+
+# Misc
+.history/
+*.tmp
