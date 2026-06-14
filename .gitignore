@@ -24,6 +24,7 @@ logs/
 .next/
 .mvn-repo/
 apps/chronicle-web/.next/
+apps/chronicle-web/generated/openapi/
 apps/chronicle-web/node_modules/
 node_modules/
 

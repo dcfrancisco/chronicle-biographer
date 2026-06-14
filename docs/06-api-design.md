@@ -16,6 +16,8 @@ Core endpoints (examples)
 - `POST /api/v1/interviews/{id}/answer` — submit an answer
 - `POST /api/v1/books/generate` — request book/chapter generation
 - `POST /api/v1/query` — general RAG query with persona and provenance
+- `GET /api/v1/settings` — load settings and provider registry
+- `PUT /api/v1/settings/provider-configurations/{purpose}/{provider}` — save provider config
 
 Security & privacy
 - OAuth2/OIDC for authentication.
@@ -23,4 +25,3 @@ Security & privacy
 
 Versioning
 - Use `/api/v1/` as the MVP surface; reserve breaking changes for major versions.
-

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
-import { BookOpenText, NotebookPen, PenSquare, UploadCloud } from "lucide-react";
+import { BookOpenText, NotebookPen, PenSquare, Settings2, UploadCloud } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 
@@ -11,7 +11,8 @@ const navItems = [
   { href: "/upload", label: "Upload", icon: UploadCloud },
   { href: "/studio", label: "Writing Studio", icon: PenSquare },
   { href: "/notebook", label: "Notebook", icon: NotebookPen },
-  { href: "/books", label: "Book Reader", icon: BookOpenText }
+  { href: "/books", label: "Book Reader", icon: BookOpenText },
+  { href: "/settings", label: "Settings", icon: Settings2 }
 ];
 
 export function AppShell({ children }: { children: ReactNode }) {

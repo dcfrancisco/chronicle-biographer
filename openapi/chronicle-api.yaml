@@ -29,7 +29,6 @@ paths:
                 metadata:
                   type: string
                   description: JSON string for metadata
-            required: [file, media_type]
       responses:
         "201":
           description: Artifact created
@@ -265,7 +264,7 @@ paths:
       summary: Get timeline nodes
       parameters:
         - $ref: "#/components/parameters/start"
-        - $ref: "#/components/parameters=end"
+        - $ref: "#/components/parameters/end"
         - $ref: "#/components/parameters/page"
         - $ref: "#/components/parameters/per_page"
       responses:
@@ -362,6 +361,45 @@ paths:
       security:
         - bearerAuth: []
 
+  /api/v1/settings:
+    get:
+      tags: [settings]
+      operationId: getSettings
+      summary: Get Chronicle settings and provider registry
+      responses:
+        "200":
+          description: Settings snapshot
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SettingsResponse"
+      security:
+        - bearerAuth: []
+
+  /api/v1/settings/provider-configurations/{purpose}/{provider}:
+    put:
+      tags: [settings]
+      operationId: saveProviderConfiguration
+      summary: Save a provider configuration
+      parameters:
+        - $ref: "#/components/parameters/providerPurpose"
+        - $ref: "#/components/parameters/providerType"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProviderConfigurationRequest"
+      responses:
+        "200":
+          description: Provider configuration saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProviderConfigurationResponse"
+      security:
+        - bearerAuth: []
+
 components:
   securitySchemes:
     bearerAuth:
@@ -427,6 +465,20 @@ components:
       schema:
         type: string
         format: date
+    providerPurpose:
+      name: purpose
+      in: path
+      required: true
+      schema:
+        type: string
+        enum: [AI, EMBEDDING]
+    providerType:
+      name: provider
+      in: path
+      required: true
+      schema:
+        type: string
+        enum: [OPENAI, ANTHROPIC, GEMINI, OLLAMA, OIP]
 
   responses:
     BadRequest:
@@ -976,6 +1028,124 @@ components:
         model_meta:
           type: object
 
+    ProviderConfigurationRequest:
+      type: object
+      required: [apiKey, model, embeddingModel, baseUrl, validationStatus, selected]
+      properties:
+        apiKey:
+          type: string
+        model:
+          type: string
+        embeddingModel:
+          type: string
+        baseUrl:
+          type: string
+        validationStatus:
+          type: string
+          enum: [PENDING, VALID, INVALID, DISABLED]
+        selected:
+          type: boolean
+
+    ProviderConfigurationResponse:
+      type: object
+      required: [purpose, provider, apiKey, model, embeddingModel, baseUrl, validationStatus, selected]
+      properties:
+        purpose:
+          type: string
+          enum: [AI, EMBEDDING]
+        provider:
+          type: string
+          enum: [OPENAI, ANTHROPIC, GEMINI, OLLAMA, OIP]
+        apiKey:
+          type: string
+        model:
+          type: string
+        embeddingModel:
+          type: string
+        baseUrl:
+          type: string
+        validationStatus:
+          type: string
+          enum: [PENDING, VALID, INVALID, DISABLED]
+        selected:
+          type: boolean
+
+    ProviderDefinition:
+      type: object
+      required: [provider, label, defaultModel, defaultEmbeddingModel, baseUrlPlaceholder, disabled, description]
+      properties:
+        provider:
+          type: string
+          enum: [OPENAI, ANTHROPIC, GEMINI, OLLAMA, OIP]
+        label:
+          type: string
+        defaultModel:
+          type: string
+        defaultEmbeddingModel:
+          type: string
+        baseUrlPlaceholder:
+          type: string
+        disabled:
+          type: boolean
+        description:
+          type: string
+
+    SettingsSection:
+      type: object
+      required: [title, description, value]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        value:
+          type: string
+
+    StorageSection:
+      type: object
+      required: [title, description, value, detail]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        value:
+          type: string
+        detail:
+          type: string
+
+    AboutSection:
+      type: object
+      required: [title, description, version, note]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        version:
+          type: string
+        note:
+          type: string
+
+    SettingsResponse:
+      type: object
+      required: [general, aiProvider, embeddingProvider, storage, about, providerRegistry]
+      properties:
+        general:
+          $ref: "#/components/schemas/SettingsSection"
+        aiProvider:
+          $ref: "#/components/schemas/ProviderConfigurationResponse"
+        embeddingProvider:
+          $ref: "#/components/schemas/ProviderConfigurationResponse"
+        storage:
+          $ref: "#/components/schemas/StorageSection"
+        about:
+          $ref: "#/components/schemas/AboutSection"
+        providerRegistry:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProviderDefinition"
+
   # end components
 
 tags:
@@ -987,3 +1157,4 @@ tags:
   - name: themes
   - name: books
   - name: rag
+  - name: settings

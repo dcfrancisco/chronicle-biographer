@@ -4,8 +4,11 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "next dev",
+    "predev": "npm run generate:api",
     "build": "next build",
+    "prebuild": "npm run generate:api",
     "start": "next start",
+    "generate:api": "../../mvnw -q -f ../../pom.xml -pl services/chronicle-api -am -DskipTests generate-sources",
     "lint": "next lint"
   },
   "dependencies": {
