@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --canvas: 150 18% 8%;
+  --paper: 44 24% 93%;
+  --panel: 148 14% 11%;
+  --ink: 145 12% 96%;
+  --muted: 135 7% 69%;
+  --accent: 41 57% 72%;
+  --accent-2: 151 22% 67%;
+  --line: 148 12% 17%;
+  --success: 145 33% 59%;
+  --warning: 35 89% 68%;
+  --font-sans: "Avenir Next", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont,
+    sans-serif;
+  --font-serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia,
+    serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.04), transparent 28%),
+    linear-gradient(180deg, #11150f 0%, #0b0f0a 100%);
+  color: hsl(var(--paper));
+  font-family: var(--font-sans);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: rgba(214, 192, 138, 0.35);
+  color: #fff;
+}
+
+.paper-surface {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015)),
+    rgba(17, 21, 15, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(24px);
+}
+
+.chronicle-copy {
+  font-family: var(--font-serif);
+  letter-spacing: 0.01em;
+}
+
+.chronicle-grid {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 24px 24px;
+}

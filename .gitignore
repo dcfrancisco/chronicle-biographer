@@ -9,6 +9,7 @@
 .vscode/
 /.classpath
 /.project
+.mvn-repo/
 
 # Mac
 .DS_Store
@@ -20,6 +21,11 @@ logs/
 # Build
 /out/
 /build/
+.next/
+.mvn-repo/
+apps/chronicle-web/.next/
+apps/chronicle-web/node_modules/
+node_modules/
 
 # Environment
 .env

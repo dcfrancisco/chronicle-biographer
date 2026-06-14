@@ -18,10 +18,25 @@ Docs index
 - [10-roadmap.md](docs/10-roadmap.md)
 - [11-local-development.md](docs/11-local-development.md)
 
-What next
+Frontend prototype
 
-- I can update the GitHub repo description and repository topics (e.g., `chronicle-biographer`, `ai-biographer`).
-- I can open a small PR that removes the legacy internal docs and replaces them with this product-oriented structure.
+1. `cd apps/chronicle-web`
+2. `npm install`
+3. `npm run dev`
+
+The frontend opens on the Upload experience at `/upload`.
+
+Production build:
+
+1. `cd apps/chronicle-web`
+2. `npm run build`
+
+Local startup
+
+1. `cp .env.example .env`
+2. `docker compose up --build`
+
+The API starts at `http://localhost:8080` and Flyway bootstraps the database schema on startup.
 
 
 Over time it becomes more than software.

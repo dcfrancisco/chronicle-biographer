@@ -15,10 +15,11 @@
   </properties>
 
   <modules>
-    <module>chronicle-domain</module>
-    <module>chronicle-infrastructure</module>
-    <module>chronicle-application</module>
-    <module>chronicle-api</module>
+    <module>modules/chronicle-domain</module>
+    <module>modules/chronicle-infrastructure</module>
+    <module>modules/chronicle-application</module>
+    <module>modules/chronicle-ingestion</module>
+    <module>services/chronicle-api</module>
   </modules>
 
   <dependencyManagement>
@@ -44,6 +45,11 @@
       <dependency>
         <groupId>com.chronicle</groupId>
         <artifactId>chronicle-application</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.chronicle</groupId>
+        <artifactId>chronicle-ingestion</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
