@@ -1,17 +1,26 @@
-# API Design (overview)
+ # API Design (Product Overview)
 
-Keep APIs RESTful and focused on model primitives.
+This document describes Chronicle's public API intent and the core endpoints supporting ingestion, memory retrieval, interviews, themes, and book generation.
 
-Key endpoints:
-- `POST /api/v1/ingest` — submit an artifact for processing
-- `POST /api/v1/observations` — submit or create observations
-- `GET /api/v1/hypotheses` — list or search hypotheses
-- `POST /api/v1/investigations` — start an investigation workflow
-- `GET /api/v1/themes` — list promoted themes
+Design principles
+- RESTful JSON APIs under `/api/v1`.
+- All AI-generated objects include `confidence`, `provenance`, and `evidence` fields.
+- Use UUIDs for resources and standard pagination patterns.
 
-Authentication & privacy:
-- OAuth2 for user accounts.
-- Per-user encryption keys or tenant-based encryption for private data.
+Core endpoints (examples)
+- `POST /api/v1/artifacts` — upload artifact
+- `GET /api/v1/artifacts/{id}` — fetch artifact metadata and signed URL
+- `POST /api/v1/memories/search` — semantic memory search
+- `GET /api/v1/observations` — list biographer observations
+- `POST /api/v1/interviews` — start interview session
+- `POST /api/v1/interviews/{id}/answer` — submit an answer
+- `POST /api/v1/books/generate` — request book/chapter generation
+- `POST /api/v1/query` — general RAG query with persona and provenance
 
-Versioning:
-- Use `/api/v1/` and keep breaking changes for major versions.
+Security & privacy
+- OAuth2/OIDC for authentication.
+- Per-user encryption keys or tenant-scoped encryption for private data.
+
+Versioning
+- Use `/api/v1/` as the MVP surface; reserve breaking changes for major versions.
+
