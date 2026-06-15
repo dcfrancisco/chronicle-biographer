@@ -20,7 +20,7 @@ COPY services/chronicle-api/src services/chronicle-api/src
 # Include OpenAPI spec so openapi-generator can access it during build
 COPY openapi openapi
 
-RUN mvn -pl services/chronicle-api -am -DskipTests package spring-boot:repackage
+RUN mvn -pl services/chronicle-api -am -DskipTests package
 
 FROM eclipse-temurin:21-jre-jammy AS runtime
 
