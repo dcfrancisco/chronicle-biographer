@@ -29,7 +29,7 @@ export default function BooksPage() {
         </div>
 
         <p className="mt-3 text-sm leading-6 text-paper/65">
-          Read the memoir as a crafted work, with the evidence still within reach.
+          This is a mock reader prototype, not a live book integration.
         </p>
 
         <Separator className="my-5" />
@@ -65,7 +65,7 @@ export default function BooksPage() {
             <div className="flex items-center justify-between gap-3">
               <div>
                 <Badge tone="neutral" className="border-black/10 bg-black/5 text-[#4b4b3c]">
-                  Reading mode
+                  Mock prototype
                 </Badge>
                 <CardTitle className="chronicle-copy mt-3 text-4xl text-[#171a14]">
                   {chapter.part}
@@ -155,14 +155,14 @@ export default function BooksPage() {
 
               <Card className="border-black/10 bg-white/40 text-[#1a1c17] shadow-none">
                 <CardHeader>
-                  <CardTitle className="text-base text-[#1f231c]">Related Interviews</CardTitle>
+                  <CardTitle className="text-base text-[#1f231c]">Related references</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  {["Interview 3", "Interview 8"].map((item) => (
+                  {["Reference 3", "Reference 8"].map((item) => (
                     <div key={item} className="rounded-2xl border border-black/8 bg-white/50 p-3">
                       <div className="text-sm font-medium">{item}</div>
                       <p className="mt-2 text-sm leading-6 text-[#36392f]">
-                        A biographical touchpoint that helps verify the memoir draft.
+                        A concept placeholder for supporting material in the reader prototype.
                       </p>
                     </div>
                   ))}
@@ -189,8 +189,8 @@ export default function BooksPage() {
       <aside className="space-y-5">
         <Card className="bg-[#10170f]/92">
           <CardHeader>
-            <CardTitle>Reading mode</CardTitle>
-            <CardDescription>All prose, no chat bubbles.</CardDescription>
+            <CardTitle>Prototype surface</CardTitle>
+            <CardDescription>All prose, no live reader integration.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3 text-sm leading-6 text-paper/68">
             <p>Use this view when the chapter should read like a published memoir draft.</p>

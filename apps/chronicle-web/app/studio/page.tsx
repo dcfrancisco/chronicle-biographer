@@ -34,7 +34,8 @@ export default function WritingStudioPage() {
           </div>
           <h1 className="mt-2 text-2xl font-semibold tracking-tight">Working memory</h1>
           <p className="mt-2 text-sm leading-6 text-paper/65">
-            Chronicle is studying a life while you write it.
+            This is a mock prototype surface for the writing concept, not a shipped
+            writing workflow.
           </p>
         </div>
 
@@ -71,7 +72,7 @@ export default function WritingStudioPage() {
         <Card className="overflow-hidden border-white/8 bg-[#11150f]/86">
           <CardHeader className="flex items-start justify-between gap-4">
             <div>
-              <Badge tone="accent">Today&apos;s memory</Badge>
+              <Badge tone="accent">Mock prototype</Badge>
               <CardTitle className="mt-3 text-3xl font-semibold">Draft with provenance</CardTitle>
               <CardDescription className="max-w-2xl text-base">
                 Write the memory as you remember it. Chronicle will hold the evidence,
@@ -114,7 +115,7 @@ export default function WritingStudioPage() {
 
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex flex-wrap items-center gap-2">
-                <Badge tone="accent">Biographer</Badge>
+                <Badge tone="accent">Prototype</Badge>
                 <Badge tone="neutral">Historian</Badge>
                 <Badge tone="neutral">Skeptic pass ready</Badge>
               </div>

@@ -1,36 +1,28 @@
+# Database Design (Current State)
 
-# Database Design (PostgreSQL + pgvector)
+Chronicle uses PostgreSQL for the current demo, but not every table in the migration history is part of the MVP story.
 
-This document explains the recommended DB schema for Chronicle, focused on PostgreSQL with the `pgvector` extension for semantic search. It captures Subject Memory, Biographer Memory, Relationship Memory, and Narrative Memory models.
+Used by the current flow
+- `artifacts`
+- `artifact_chunks`
+- `memories`
+- `observations`
+- `open_questions`
+- `hypotheses`
+- `book_drafts`
+- `provider_configurations`
 
-Guiding rules
-- Use Postgres as the authoritative store and an S3-compatible object store for raw media.
-- Use `vector` (pgvector) columns for embeddings and nearest-neighbor search.
-- Artifacts are append-only and must include provenance and metadata.
-- Interpretive records must link back to source artifacts via structured `provenance` JSONB.
-
-Core tables (high-level)
+Present in the schema but not part of the truthful MVP narrative
 - `users`
-- `artifacts` and `artifact_chunks`
-- `memories` and optional `memory_embeddings`
+- `memory_embeddings`
 - `life_events`
-- `claims`, `biographer_notes`, `hypotheses`, `contradictions`
-- `themes`, `narrative_arcs`, `chapters`, `book_drafts`
+- `claims`
+- `biographer_notes`
+- `contradictions`
+- `interview_sessions`
+- `interview_answers`
 
-Indexing & strategies
-- Use IVFFLAT indexes for vector columns and GIN indexes for JSONB fields used in filters.
-- Partition or archive older artifacts to keep hot tables performant.
-
-Migration & DDL notes
-- Use Flyway migration files (V1__extensions.sql, V2__users_and_artifacts.sql, ...).
-- Prefer UUID PKs and snake_case naming to match typical Java/Spring conventions.
-
-Provenance model
-- Store provenance as structured JSONB linking to `artifact_id`, `memory_id`, offsets, `extractionMethod`, and `model_meta`.
-- Record `confidenceHistory` for auditability.
-
-Security & operational considerations
-- Soft-delete with `deleted` and `deleted_at` fields.
-- Audit logs and `generation_audit` table for model calls.
-- Tune `pgvector` index `lists` parameter post-seed.
-
+Current guidance
+- Keep the MVP database story focused on artifact ingestion and draft generation.
+- Treat embeddings, interviews, contradictions, and narrative expansion as deferred work.
+- Do not describe object storage or vector-search infrastructure as shipped product capability.

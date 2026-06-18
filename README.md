@@ -103,18 +103,20 @@ Chapters become books.
 
 Chronicle is in active development.
 
-Current focus:
+Current MVP:
 
 ```text
-Upload
-→ Memory
-→ Observation
-→ Hypothesis
-→ Question
-→ Chapter
+Upload artifact
+→ Extract text
+→ Chunk content
+→ Create memory candidates
+→ Generate observations
+→ Generate hypotheses
+→ Generate questions
+→ Generate chapter draft
 ```
 
-The goal is to prove the core biographer experience before expanding into advanced timeline, relationship, publishing, and workspace capabilities.
+The truthful scope is intentionally small. Upload is the only working product surface. Studio, Notebook, Books, and Settings are prototype or mock surfaces, and the rest is deferred roadmap work.
 
 ---
 
@@ -122,6 +124,7 @@ The goal is to prove the core biographer experience before expanding into advanc
 
 ### Product
 
+* [00-current-mvp.md](docs/00-current-mvp.md)
 * [01-vision.md](docs/01-vision.md)
 * [02-product-requirements.md](docs/02-product-requirements.md)
 * [03-biographer-memory.md](docs/03-biographer-memory.md)

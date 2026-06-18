@@ -35,13 +35,14 @@ export default function NotebookPage() {
               What Chronicle currently believes
             </h1>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-paper/68">
-              This is the private research surface. The biographer studies the life here:
-              observations, hypotheses, open questions, contradictions, and themes.
+              This is a mock prototype surface for research concepts, not a live product
+              workflow. It shows observations, hypotheses, open questions, contradictions,
+              and themes as local demo data.
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <Badge tone="accent">Private notes</Badge>
-            <Badge tone="neutral">Evidence linked</Badge>
+            <Badge tone="accent">Mock prototype</Badge>
+            <Badge tone="neutral">Not API-backed</Badge>
           </div>
         </div>
 

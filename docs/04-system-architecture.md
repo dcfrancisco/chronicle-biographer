@@ -1,31 +1,35 @@
- # System Architecture
+# System Architecture
 
-This doc captures Chronicle's system-level design from a product perspective: how capture, memory, reasoning, and composition components interact to surface life stories.
+This document describes Chronicle as it exists now, not as a future platform.
 
-Product components
-- Capture & Ingestion: connectors and upload pathways for documents, photos, audio, chat exports, and social media archives.
-- Extraction & Preprocessing: OCR, ASR, language detection, chunking, and metadata normalization that produce `Artifact` and `ArtifactChunk` records.
-- Memory Store: Subject Memory and Biographer Memory persisted with provenance and embeddings (Postgres + `pgvector` for MVP).
-- Biographer Engine: reasoning layer that generates `Observation`s, proposes `Hypothesis` candidates, detects contradictions, and promotes `Theme`s.
-- Writing Studio & Notebook: UI surfaces for authorship, evidence citation, and researcher-style notes.
-- API & Orchestration: REST endpoints, async jobs, and worker fleet that connect frontend actions to background processing.
+Current implementation
+- Frontend: Next.js prototype app.
+- Primary flow: Upload, then mock/prototype review surfaces.
+- API: Spring Boot service.
+- Ingestion: local, synchronous, in-memory artifact processing.
+- AI: primary mock provider with a placeholder OpenAI adapter.
+- Persistence: PostgreSQL-backed artifact, memory, and repository data.
 
-High-level data flow
-1. User uploads or captures artifact → capture service stores `Artifact` in object store and metadata in DB.
-2. Extraction workers perform OCR/ASR → emit `ArtifactChunk`s and `Observation`s.
-3. Embedding workers compute vector representations; vectors stored in `pgvector`.
-4. Biographer workers generate `Hypothesis` candidates and `InvestigationPlan`s.
-5. Themes and BookDrafts are surfaced in Writing Studio for user curation.
+Current data flow
+1. Upload an artifact.
+2. Register it in the API.
+3. Extract text locally.
+4. Chunk the content.
+5. Create memory candidates.
+6. Generate observations.
+7. Generate hypotheses.
+8. Generate open questions.
+9. Generate a chapter draft.
 
-Infrastructure pieces (MVP)
-- Frontend: Next.js PWA for capture + writing
-- API: Spring Boot (or equivalent) serving REST endpoints and webhooks
-- Workers: Kubernetes-backed workers for ingestion, ASR, OCR, extraction, and embeddings
-- DB: PostgreSQL + `pgvector` (MVP), optional external vector DB later
-- Storage: S3-compatible object store for artifacts
-- Models: adapter layer to route to cloud or local LLMs (OpenAI, Anthropic, Ollama)
+What is not part of the MVP yet
+- Object storage
+- OCR
+- ASR
+- Vector search
+- Workers
+- Kubernetes
+- Timeline and relationship systems
+- Workspace architecture
 
-Provenance & Trust
-- All interpretive results (claims, hypotheses, themes, chapters) must include provenance: artifact IDs, snippets, extraction method, and model metadata.
-- Implement audit logs for model calls, prompt templates, and user actions.
-
+Guiding rule
+- If a component does not support the current tested flow, it belongs in the roadmap, not the core architecture narrative.

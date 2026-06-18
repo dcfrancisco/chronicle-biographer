@@ -53,7 +53,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               );
             })}
           </nav>
-          <Badge tone="accent">Mock data prototype</Badge>
+          <Badge tone="accent">Prototype surfaces</Badge>
         </div>
       </header>
       <main className="mx-auto max-w-[1600px] px-4 py-5 lg:px-6">{children}</main>

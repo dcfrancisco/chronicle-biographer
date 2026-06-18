@@ -1,29 +1,42 @@
-# Roadmap (high level)
+# Roadmap
 
-Short term (0-3 months):
-- Ship robust ingestion connectors (ZIP, MBOX, PDF, photos)
-- Implement `Observation` extraction and sampling pipeline
-- Basic hypothesis proposer and UI to review candidates
+This roadmap keeps Chronicle's future ideas separate from the truthful MVP.
 
-Mid term (3-9 months):
-- Theme promotion and writing studio MVP
-- Vector search and semantic clustering for observations
-- User-facing privacy controls and encryption at rest
+Current near-term focus
+- Keep the artifact-to-draft flow honest.
+- Stabilize the current upload, extraction, chunking, memory, observation, hypothesis, question, and chapter path.
+- Reduce doc and UI drift.
 
-Long term (9+ months):
-- Collaborative biographer features (shared memories)
-- Offline-first mobile sync and local-only encryption
-- Publishing workflows, templates, and marketplace integrations
+Deferred features
+- Interviews
+- Timeline
+- Relationships
+- Themes dashboard
+- Full notebook
+- Book reader integration
+- Workspace SaaS
+- OIP provider
+- Multi-provider switching
+- OCR
+- ASR
+- Vector search
+- Object storage
+- Workers
+- Kubernetes
 
-Future Vision (Phase 4+):
+Longer-term ideas
+- Collaborative biographer features
+- Offline-first mobile sync
+- Publishing workflows
+- Templates
+- Marketplace integrations
+
+Future platform ideas
 - Workspace Intelligence Platform
 - Multiple workspaces per user with a shared memory foundation
 - Workspace-specific context, themes, outputs, and AI collaboration
 - Workspace types: Memoir, Manifesto, Biography, Legacy, Book, Blog, LinkedIn, Newsletter, Research, Custom
 - Personal and studio product lines built on the same memory system
 
-Workspace model:
-- Memories belong to the subject
-- Workspaces consume memories
-- A memory can power multiple workspaces without duplication
-- Outputs are workspace-specific and derived from the shared memory graph
+Rule
+- Anything in this file should stay out of the current MVP docs until it is implemented and tested.

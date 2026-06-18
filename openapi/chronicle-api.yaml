@@ -1,18 +1,14 @@
 openapi: 3.1.0
 info:
-  title: Chronicle API (MVP)
+  title: Chronicle API
   version: 0.1.0
-  description: |
-    OpenAPI 3.1 spec for Chronicle MVP focusing on the core memory → biographer → interview → book flow.
+  description: Current Chronicle API surface for the truthful MVP.
 servers:
-  - url: https://api.example.com
-    description: Production server (replace for local)
   - url: http://localhost:8080
-    description: Local dev server
 paths:
-  /api/v1/artifacts:
+  /api/v1/artifacts/upload:
     post:
-      summary: Upload an artifact (text, audio, image, video)
+      summary: Register an uploaded artifact
       requestBody:
         required: true
         content:
@@ -23,50 +19,74 @@ paths:
                 file:
                   type: string
                   format: binary
-                media_type:
-                  type: string
-                  description: media type (text|audio|image|video|email)
-                metadata:
-                  type: string
-                  description: JSON string for metadata
+              required:
+                - file
       responses:
         "201":
-          description: Artifact created
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ArtifactResponse"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-      security:
-        - bearerAuth: []
-
-  /api/v1/artifacts/{id}:
-    get:
-      summary: Get artifact metadata and access info
-      parameters:
-        - $ref: "#/components/parameters/artifactId"
-      responses:
-        "200":
-          description: Artifact metadata
+          description: Artifact registered
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Artifact"
-        "404":
-          $ref: "#/components/responses/NotFound"
-      security:
-        - bearerAuth: []
-
+  /api/v1/artifacts:
+    get:
+      summary: List uploaded artifacts
+      responses:
+        "200":
+          description: Artifact list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Artifact"
+  /api/v1/artifacts/{id}:
+    get:
+      summary: Get an artifact
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Artifact
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Artifact"
+  /api/v1/artifacts/{id}/ingest:
+    post:
+      summary: Run local extraction and chunking
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "202":
+          description: Extraction result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExtractionResult"
+  /api/v1/artifacts/{id}/chunks:
+    get:
+      summary: List chunks for an artifact
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Artifact chunks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ArtifactChunk"
   /api/v1/memories:
     post:
-      summary: Create a canonical memory (subject memory)
+      summary: Create a memory
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/MemoryCreateRequest"
+              $ref: "#/components/schemas/Memory"
       responses:
         "201":
           description: Memory created
@@ -74,872 +94,198 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Memory"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-      security:
-        - bearerAuth: []
-    get:
-      summary: List memories (pagination, filters)
-      parameters:
-        - $ref: "#/components/parameters/page"
-        - $ref: "#/components/parameters/per_page"
-        - $ref: "#/components/parameters/query"
-      responses:
-        "200":
-          description: Memory list
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/MemoryListResponse"
-      security:
-        - bearerAuth: []
-
-  /api/v1/memories/{id}:
-    get:
-      summary: Get a memory by id
-      parameters:
-        - $ref: "#/components/parameters/memoryId"
-      responses:
-        "200":
-          description: Memory
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Memory"
-        "404":
-          $ref: "#/components/responses/NotFound"
-      security:
-        - bearerAuth: []
-
-  /api/v1/memories/search:
+  /api/v1/memories/{id}/analyze:
     post:
-      summary: Semantic search for memories
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/MemorySearchRequest"
-      responses:
-        "200":
-          description: Search results
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/MemoryListResponse"
-      security:
-        - bearerAuth: []
-
-  /api/v1/observations:
-    get:
-      summary: List biographer observations
+      summary: Generate observations from a memory
       parameters:
-        - $ref: "#/components/parameters/page"
-        - $ref: "#/components/parameters/per_page"
+        - $ref: "#/components/parameters/id"
       responses:
         "200":
-          description: Observations list
+          description: Observations
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ObservationListResponse"
-      security:
-        - bearerAuth: []
-
-  /api/v1/hypotheses:
-    get:
-      summary: List biographer hypotheses
-      parameters:
-        - $ref: "#/components/parameters/page"
-        - $ref: "#/components/parameters/per_page"
-      responses:
-        "200":
-          description: Hypotheses list
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/HypothesisListResponse"
-      security:
-        - bearerAuth: []
-
-  /api/v1/open-questions:
-    get:
-      summary: List biographer open questions
-      parameters:
-        - $ref: "#/components/parameters/page"
-        - $ref: "#/components/parameters/per_page"
-      responses:
-        "200":
-          description: Open questions list
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OpenQuestionListResponse"
-      security:
-        - bearerAuth: []
-
-  /api/v1/contradictions:
-    get:
-      summary: List detected contradictions
-      parameters:
-        - $ref: "#/components/parameters/page"
-        - $ref: "#/components/parameters/per_page"
-      responses:
-        "200":
-          description: Contradictions list
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ContradictionListResponse"
-      security:
-        - bearerAuth: []
-
-  /api/v1/interviews:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Observation"
+  /api/v1/memories/{id}/questions:
     post:
-      summary: Start a new interview session (returns first question)
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                persona:
-                  type: string
-                context_ids:
-                  type: array
-                  items:
-                    type: string
-                    format: uuid
-                tone:
-                  type: string
+      summary: Generate open questions from a memory
+      parameters:
+        - $ref: "#/components/parameters/id"
       responses:
         "201":
-          description: Interview created
+          description: Open questions
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/InterviewSession"
-      security:
-        - bearerAuth: []
-
-  /api/v1/interviews/{id}:
-    get:
-      summary: Get interview session state
-      parameters:
-        - $ref: "#/components/parameters/interviewId"
-      responses:
-        "200":
-          description: Interview session
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/InterviewSession"
-      security:
-        - bearerAuth: []
-
-  /api/v1/interviews/{id}/answer:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OpenQuestion"
+  /api/v1/memories/{id}/hypotheses:
     post:
-      summary: Submit an interview answer
+      summary: Generate hypotheses from a memory
       parameters:
-        - $ref: "#/components/parameters/interviewId"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/InterviewAnswerRequest"
+        - $ref: "#/components/parameters/id"
       responses:
-        "200":
-          description: Next question or session update
+        "201":
+          description: Hypotheses
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/InterviewSession"
-      security:
-        - bearerAuth: []
-
-  /api/v1/timeline:
-    get:
-      summary: Get timeline nodes
-      parameters:
-        - $ref: "#/components/parameters/start"
-        - $ref: "#/components/parameters/end"
-        - $ref: "#/components/parameters/page"
-        - $ref: "#/components/parameters/per_page"
-      responses:
-        "200":
-          description: Timeline list
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TimelineListResponse"
-      security:
-        - bearerAuth: []
-
-  /api/v1/themes:
-    get:
-      summary: List themes
-      parameters:
-        - $ref: "#/components/parameters/page"
-        - $ref: "#/components/parameters/per_page"
-      responses:
-        "200":
-          description: Themes list
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ThemeListResponse"
-      security:
-        - bearerAuth: []
-
-  /api/v1/books/generate:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Hypothesis"
+  /api/v1/memories/{id}/chapter:
     post:
-      summary: Request generation of book/chapter draft
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/BookGenerateRequest"
+      summary: Generate a chapter draft from a memory
+      parameters:
+        - $ref: "#/components/parameters/id"
       responses:
         "202":
-          description: Draft generation accepted
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BookDraftResponse"
-      security:
-        - bearerAuth: []
-
-  /api/v1/books/{id}:
-    get:
-      summary: Get book draft metadata
-      parameters:
-        - $ref: "#/components/parameters/bookId"
-      responses:
-        "200":
-          description: Book draft
+          description: Chapter draft
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/BookDraft"
-      security:
-        - bearerAuth: []
-
-  /api/v1/books/{id}/chapters:
-    get:
-      summary: List chapters for a book draft
-      parameters:
-        - $ref: "#/components/parameters/bookId"
-      responses:
-        "200":
-          description: Chapters list
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ChapterListResponse"
-      security:
-        - bearerAuth: []
-
-  /api/v1/query:
-    post:
-      summary: RAG query — returns grounded answer with confidence and sources
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/QueryRequest"
-      responses:
-        "200":
-          description: Grounded answer
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/QueryResponse"
-      security:
-        - bearerAuth: []
-
-  /api/v1/settings:
-    get:
-      tags: [settings]
-      operationId: getSettings
-      summary: Get Chronicle settings and provider registry
-      responses:
-        "200":
-          description: Settings snapshot
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SettingsResponse"
-      security:
-        - bearerAuth: []
-
-  /api/v1/settings/provider-configurations/{purpose}/{provider}:
-    put:
-      tags: [settings]
-      operationId: saveProviderConfiguration
-      summary: Save a provider configuration
-      parameters:
-        - $ref: "#/components/parameters/providerPurpose"
-        - $ref: "#/components/parameters/providerType"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/ProviderConfigurationRequest"
-      responses:
-        "200":
-          description: Provider configuration saved
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ProviderConfigurationResponse"
-      security:
-        - bearerAuth: []
-
 components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-
   parameters:
-    artifactId:
+    id:
       name: id
       in: path
       required: true
       schema:
         type: string
         format: uuid
-    memoryId:
-      name: id
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
-    interviewId:
-      name: id
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
-    bookId:
-      name: id
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
-    page:
-      name: page
-      in: query
-      schema:
-        type: integer
-        default: 1
-    per_page:
-      name: per_page
-      in: query
-      schema:
-        type: integer
-        default: 20
-    query:
-      name: q
-      in: query
-      schema:
-        type: string
-    start:
-      name: start
-      in: query
-      schema:
-        type: string
-        format: date
-    end:
-      name: end
-      in: query
-      schema:
-        type: string
-        format: date
-    providerPurpose:
-      name: purpose
-      in: path
-      required: true
-      schema:
-        type: string
-        enum: [AI, EMBEDDING]
-    providerType:
-      name: provider
-      in: path
-      required: true
-      schema:
-        type: string
-        enum: [OPENAI, ANTHROPIC, GEMINI, OLLAMA, OIP]
-
-  responses:
-    BadRequest:
-      description: Invalid input
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/Error"
-    NotFound:
-      description: Not found
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/Error"
-
   schemas:
-    Error:
-      type: object
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-        details:
-          type: object
-
-    AuditMeta:
-      type: object
-      properties:
-        created_at:
-          type: string
-          format: date-time
-        created_by:
-          type: string
-        updated_at:
-          type: string
-          format: date-time
-        updated_by:
-          type: string
-
-    Provenance:
-      type: object
-      description: Structured provenance linking to evidence and generation metadata
-      properties:
-        evidence:
-          type: array
-          items:
-            type: object
-            properties:
-              artifact_id:
-                type: string
-                format: uuid
-              memory_id:
-                type: string
-                format: uuid
-              snippet:
-                type: string
-              offset:
-                type: object
-                properties:
-                  start:
-                    type: integer
-                  end:
-                    type: integer
-        generated_by:
-          type: object
-          properties:
-            model:
-              type: string
-            model_version:
-              type: string
-            prompt_id:
-              type: string
-        created_at:
-          type: string
-          format: date-time
-
     Artifact:
       type: object
       properties:
         id:
           type: string
           format: uuid
-        user_id:
+        fileName:
           type: string
-          format: uuid
-        source_type:
+        contentType:
           type: string
-        media_type:
+        format:
           type: string
-        uri:
+        status:
           type: string
-        metadata:
-          type: object
-        immutable:
-          type: boolean
-        audit:
-          $ref: "#/components/schemas/AuditMeta"
-
-    ArtifactResponse:
+        uploadedAt:
+          type: string
+          format: date-time
+        ingestedAt:
+          type: string
+          format: date-time
+          nullable: true
+        chunkCount:
+          type: integer
+        memoryCount:
+          type: integer
+        observationCount:
+          type: integer
+        hypothesisCount:
+          type: integer
+    ArtifactChunk:
       type: object
       properties:
         id:
           type: string
           format: uuid
-        upload_status:
+        artifactId:
           type: string
-        artifact:
-          $ref: "#/components/schemas/Artifact"
-
-    MemoryCreateRequest:
-      type: object
-      properties:
-        artifact_ids:
+          format: uuid
+        fileName:
+          type: string
+        pageNumber:
+          type: integer
+        chunkNumber:
+          type: integer
+        text:
+          type: string
+        provenance:
           type: array
           items:
-            type: string
-            format: uuid
-        title:
+            type: object
+    ExtractionResult:
+      type: object
+      properties:
+        artifactId:
           type: string
-        canonical_text:
+          format: uuid
+        fileName:
           type: string
-        summary:
+        extractedText:
           type: string
-        top_entities:
-          type: object
-        topics:
-          type: object
-        provenance:
-          $ref: "#/components/schemas/Provenance"
-
+        chunks:
+          type: array
+          items:
+            $ref: "#/components/schemas/ArtifactChunk"
+        memories:
+          type: array
+          items:
+            $ref: "#/components/schemas/Memory"
+        observations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Observation"
+        hypotheses:
+          type: array
+          items:
+            $ref: "#/components/schemas/Hypothesis"
     Memory:
       type: object
       properties:
         id:
           type: string
           format: uuid
-        user_id:
+        userId:
           type: string
           format: uuid
-        artifact_ids:
-          type: array
-          items:
-            type: string
-            format: uuid
         title:
           type: string
-        canonical_text:
+        canonicalText:
           type: string
-        summary:
-          type: string
-        top_entities:
-          type: object
-        topics:
-          type: object
-        confidence:
-          type: number
-          format: float
-        provenance:
-          $ref: "#/components/schemas/Provenance"
-        embedding:
-          type: array
-          items:
-            type: number
-        audit:
-          $ref: "#/components/schemas/AuditMeta"
-
-    MemoryListResponse:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/Memory"
-        page:
-          type: integer
-        per_page:
-          type: integer
-        total:
-          type: integer
-        next_cursor:
-          type: string
-
-    MemorySearchRequest:
-      type: object
-      properties:
-        query_text:
-          type: string
-        top_k:
-          type: integer
-        filters:
-          type: object
-
     Observation:
       type: object
       properties:
         id:
           type: string
           format: uuid
-        user_id:
+        memoryId:
           type: string
           format: uuid
         text:
           type: string
         confidence:
           type: number
-          format: float
-        provenance:
-          $ref: "#/components/schemas/Provenance"
-        audit:
-          $ref: "#/components/schemas/AuditMeta"
-
-    ObservationListResponse:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/Observation"
-        page:
-          type: integer
-        per_page:
-          type: integer
-        total:
-          type: integer
-
-    HypothesisListResponse:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/Observation"
-        page:
-          type: integer
-        per_page:
-          type: integer
-        total:
-          type: integer
-
-    OpenQuestionListResponse:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/Observation"
-        page:
-          type: integer
-        per_page:
-          type: integer
-        total:
-          type: integer
-
-    Contradiction:
+    OpenQuestion:
       type: object
       properties:
         id:
           type: string
           format: uuid
-        claim_ids:
-          type: array
-          items:
-            type: string
-            format: uuid
-        description:
+        memoryId:
           type: string
-        severity:
-          type: integer
-        resolved:
-          type: boolean
-        provenance:
-          $ref: "#/components/schemas/Provenance"
-        audit:
-          $ref: "#/components/schemas/AuditMeta"
-
-    ContradictionListResponse:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/Contradiction"
-        page:
-          type: integer
-        per_page:
-          type: integer
-        total:
-          type: integer
-
-    InterviewSession:
+          format: uuid
+        questionText:
+          type: string
+    Hypothesis:
       type: object
       properties:
         id:
           type: string
           format: uuid
-        user_id:
+        userId:
           type: string
           format: uuid
-        persona:
+        text:
           type: string
-        tone:
-          type: string
-        questions:
-          type: array
-          items:
-            $ref: "#/components/schemas/InterviewQuestion"
-        answers:
-          type: array
-          items:
-            $ref: "#/components/schemas/InterviewAnswer"
-        audit:
-          $ref: "#/components/schemas/AuditMeta"
-
-    InterviewQuestion:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        question_text:
-          type: string
-        order_index:
-          type: integer
-        generated_by:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-
-    InterviewAnswer:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        question_id:
-          type: string
-          format: uuid
-        answer_text:
-          type: string
-        artifact_id:
-          type: string
-          format: uuid
-        extracted_claim_ids:
-          type: array
-          items:
-            type: string
-            format: uuid
-        provenance:
-          $ref: "#/components/schemas/Provenance"
-
-    InterviewAnswerRequest:
-      type: object
-      properties:
-        answer_text:
-          type: string
-        artifact_id:
-          type: string
-          format: uuid
-
-    TimelineNode:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        title:
-          type: string
-        start_date:
-          type: string
-          format: date
-        end_date:
-          type: string
-          format: date
-        evidence_ids:
-          type: array
-          items:
-            type: string
-            format: uuid
         confidence:
           type: number
-          format: float
-
-    TimelineListResponse:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/TimelineNode"
-        page:
-          type: integer
-        per_page:
-          type: integer
-        total:
-          type: integer
-
-    Theme:
-      type: object
-      properties:
-        id:
+        provenance:
           type: string
-          format: uuid
-        name:
-          type: string
-        description:
-          type: string
-        evidence_ids:
-          type: array
-          items:
-            type: string
-            format: uuid
-        strength_score:
-          type: number
-          format: float
-        confidence:
-          type: number
-          format: float
-
-    ThemeListResponse:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/Theme"
-        page:
-          type: integer
-        per_page:
-          type: integer
-        total:
-          type: integer
-
-    BookGenerateRequest:
-      type: object
-      properties:
-        title:
-          type: string
-        type:
-          type: string
-          description: memoir|manifesto|lessons
-        persona_weights:
-          type: object
-        ranges:
-          type: object
-        include_themes:
-          type: array
-          items:
-            type: string
-            format: uuid
-
-    BookDraftResponse:
-      type: object
-      properties:
-        draft_id:
-          type: string
-          format: uuid
-        status:
-          type: string
-
     BookDraft:
       type: object
       properties:
@@ -948,213 +294,7 @@ components:
           format: uuid
         title:
           type: string
-        type:
+        content:
           type: string
         status:
           type: string
-        persona_weights:
-          type: object
-        metadata:
-          type: object
-        provenance:
-          $ref: "#/components/schemas/Provenance"
-        audit:
-          $ref: "#/components/schemas/AuditMeta"
-
-    ChapterListResponse:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uuid
-              title:
-                type: string
-              order_index:
-                type: integer
-              content:
-                type: string
-              provenance:
-                $ref: "#/components/schemas/Provenance"
-
-    QueryRequest:
-      type: object
-      properties:
-        query_text:
-          type: string
-        persona:
-          type: string
-        voice_profile_id:
-          type: string
-          format: uuid
-        top_k:
-          type: integer
-
-    QueryResponse:
-      type: object
-      properties:
-        answer:
-          type: string
-        confidence:
-          type: number
-          format: float
-        evidence:
-          type: array
-          items:
-            type: object
-            properties:
-              artifact_id:
-                type: string
-                format: uuid
-              memory_id:
-                type: string
-                format: uuid
-              snippet:
-                type: string
-        sources:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uuid
-              type:
-                type: string
-        model_meta:
-          type: object
-
-    ProviderConfigurationRequest:
-      type: object
-      required: [apiKey, model, embeddingModel, baseUrl, validationStatus, selected]
-      properties:
-        apiKey:
-          type: string
-        model:
-          type: string
-        embeddingModel:
-          type: string
-        baseUrl:
-          type: string
-        validationStatus:
-          type: string
-          enum: [PENDING, VALID, INVALID, DISABLED]
-        selected:
-          type: boolean
-
-    ProviderConfigurationResponse:
-      type: object
-      required: [purpose, provider, apiKey, model, embeddingModel, baseUrl, validationStatus, selected]
-      properties:
-        purpose:
-          type: string
-          enum: [AI, EMBEDDING]
-        provider:
-          type: string
-          enum: [OPENAI, ANTHROPIC, GEMINI, OLLAMA, OIP]
-        apiKey:
-          type: string
-        model:
-          type: string
-        embeddingModel:
-          type: string
-        baseUrl:
-          type: string
-        validationStatus:
-          type: string
-          enum: [PENDING, VALID, INVALID, DISABLED]
-        selected:
-          type: boolean
-
-    ProviderDefinition:
-      type: object
-      required: [provider, label, defaultModel, defaultEmbeddingModel, baseUrlPlaceholder, disabled, description]
-      properties:
-        provider:
-          type: string
-          enum: [OPENAI, ANTHROPIC, GEMINI, OLLAMA, OIP]
-        label:
-          type: string
-        defaultModel:
-          type: string
-        defaultEmbeddingModel:
-          type: string
-        baseUrlPlaceholder:
-          type: string
-        disabled:
-          type: boolean
-        description:
-          type: string
-
-    SettingsSection:
-      type: object
-      required: [title, description, value]
-      properties:
-        title:
-          type: string
-        description:
-          type: string
-        value:
-          type: string
-
-    StorageSection:
-      type: object
-      required: [title, description, value, detail]
-      properties:
-        title:
-          type: string
-        description:
-          type: string
-        value:
-          type: string
-        detail:
-          type: string
-
-    AboutSection:
-      type: object
-      required: [title, description, version, note]
-      properties:
-        title:
-          type: string
-        description:
-          type: string
-        version:
-          type: string
-        note:
-          type: string
-
-    SettingsResponse:
-      type: object
-      required: [general, aiProvider, embeddingProvider, storage, about, providerRegistry]
-      properties:
-        general:
-          $ref: "#/components/schemas/SettingsSection"
-        aiProvider:
-          $ref: "#/components/schemas/ProviderConfigurationResponse"
-        embeddingProvider:
-          $ref: "#/components/schemas/ProviderConfigurationResponse"
-        storage:
-          $ref: "#/components/schemas/StorageSection"
-        about:
-          $ref: "#/components/schemas/AboutSection"
-        providerRegistry:
-          type: array
-          items:
-            $ref: "#/components/schemas/ProviderDefinition"
-
-  # end components
-
-tags:
-  - name: artifacts
-  - name: memories
-  - name: biographer
-  - name: interviews
-  - name: timeline
-  - name: themes
-  - name: books
-  - name: rag
-  - name: settings

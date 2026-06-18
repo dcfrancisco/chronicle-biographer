@@ -1,6 +1,6 @@
 # Biographer Memory
 
-This is the canonical design doc for Chronicle's memory model — the product moat. Capture and refine this before expanding logic elsewhere.
+This is the design note for Chronicle's memory model. The MVP only uses a narrow subset of this model today; the rest is deferred.
 
 Overview
 --------
@@ -53,8 +53,8 @@ How theories evolve
 - Keep hypotheses mutable. New contradictions reduce confidence and create `InvestigationPlan`s.
 - Allow manual overrides by the user with `userConfidence` and `userNotes` fields.
 
-API surface (high-level)
-------------------------
+Deferred API surface
+--------------------
 - `POST /memories/observations` — ingest observation
 - `POST /memories/hypotheses` — propose hypothesis
 - `POST /memories/investigations` — create investigation plan
