@@ -12,6 +12,25 @@ Chronicle transforms documents, conversations, photos, memories, journals, and l
 
 ---
 
+## Project Structure
+
+```text
+apps/
+  chronicle-web/        Next.js frontend
+services/
+  chronicle-api/        Spring Boot API
+modules/
+  chronicle-domain/     Core domain model
+  chronicle-application/ Application services and ports
+  chronicle-infrastructure/ Persistence, adapters, migrations, providers
+  chronicle-ingestion/  Artifact ingestion pipeline
+docs/
+openapi/
+docker-compose.yml
+```
+
+---
+
 ## Why Chronicle Exists
 
 Most people leave behind thousands of pages of material:
@@ -118,6 +137,8 @@ The goal is to prove the core biographer experience before expanding into advanc
 ---
 
 ## Frontend Prototype
+
+The Chronicle UI lives in `apps/chronicle-web`.
 
 ```bash
 cd apps/chronicle-web
